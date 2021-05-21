@@ -3,7 +3,7 @@ import * as React from 'react';
 import '../styles/global.css';
 import '../styles/fade.css';
 
-import { createLoginUrl, parseCodeFromUrl } from '../utils/login';
+import { createLoginUrl } from '../utils/login';
 
 const pageStyles = {
   margin: '0px auto',
@@ -11,10 +11,6 @@ const pageStyles = {
 };
 
 const Splash = () => {
-  const urlParams = parseCodeFromUrl(window.location.search);
-  if (urlParams.code) {
-    console.log(urlParams);
-  }
   const googleLoginUrl = createLoginUrl();
   return (
     <div>
