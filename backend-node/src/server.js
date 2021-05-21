@@ -1,10 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+dotenv.config({ path: '.env' });
+const cors = require('cors');
 
 const health = require('./routes/health/health.routes');
-
-dotenv.config({ path: '.env' });
+const user = require('./routes/user/user.routes');
+const calendar = require('./routes/calendar/calendar.routes');
 
 // const authentication = require('./middleware/authentication');
 
@@ -25,13 +27,14 @@ mongoose.connection.on('connected', () => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 
 // Routes
 app.get('/health', health.health);
 // app.post('/image', [authentication, upload.array('images')], image.upload);
 // app.get('/image', authentication, image.searchByName);
 // app.get('/image/user', authentication, image.retrieveAllByUser);
-// app.post('/user/register', user.register);
-// app.post('/user/login', user.login);
+app.post('/user/login', user.login);
+app.get('/calendar', calendar.listEvents);
 
 module.exports = app;

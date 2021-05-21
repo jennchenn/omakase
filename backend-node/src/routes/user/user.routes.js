@@ -1,46 +1,23 @@
-const UserController = require('./user.controller');
+const axios = require('axios');
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const userController = new UserController();
+const Calendar = require('../../services/calendar');
 
-exports.register = async (req, res) => {
-    try {
-        console.log(`Received request to register user with email ${req.body.email}`);
-        const existingUser = await userController.findUser(req.body.email);
-        if (existingUser) {
-            console.log('User already exists.');
-            res.status(400).send({ message: 'Email already in use please sign in' });
-            return;
-        }
-        const result = await userController.register(req.body.email, req.body.password);
-        console.log(`User successfully registered with email ${result.email}`);
-        res.status(200)
-            .send({
-                message: 'User registered!',
-                email: result.email
-            });
-    } catch (err) {
-        res.status(500).send({ message: err.toString() });
-    }
-};
+const calendarService = new Calendar();
 
 exports.login = async (req, res) => {
     try {
-        console.log(`Received request to login user ${req.body.email}`);
-        const existingUser = await userController.findUser(req.body.email);
-        if (!existingUser) {
-            console.log(`User with email ${req.body.email} does not exist.`);
-            res.status(400).send({ message: 'User does not exist; please register' });
-            return;
-        }
-        const result = await userController.matchPassword(existingUser, req.body.password);
-        if (!result) {
-            console.log('Invalid password provided.');
-            res.status(401).send({ message: 'Incorrect password supplied' });
-            return;
-        }
-        const token = await userController.generateToken(existingUser);
+        console.log('Received request to login user');
+        const { id_token, refresh_token } = req.body;
+        const profile = await client.verifyIdToken({
+            idToken: id_token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        const { name, email } = profile.getPayload();
+        calendarService.setCredentials(refresh_token);
         console.log('User successfully logged in!');
-        res.status(200).send(token);
+        res.status(200).send({ name, email });
     } catch (err) {
         res.status(500).send({ message: err.toString() });
     }

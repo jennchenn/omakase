@@ -12,7 +12,7 @@ export async function getAccessTokenFromCode(code) {
             code,
         },
     });
-    const url = "http://localhost:8080/user/register";
+    const url = "http://localhost:8080/user/login";
     await axios.post(url, { id_token: data.id_token, refresh_token: data.refresh_token });
     return;
 };
