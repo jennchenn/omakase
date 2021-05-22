@@ -2,12 +2,15 @@ const User = require('../models/User');
 
 // Make all queries to database using Repository class
 class Repository {
-    createUser(email, passwordHash) {
-        const user = {
-            email: email,
-            password: passwordHash
-        };
+    createUser(user) {
         return User.create(user);
+    }
+
+    updateUser(user) {
+        return User.updateOne(
+            { email: user.email },
+            { refresh_token: user.refresh_token }
+        );
     }
 
     findUser(email) {

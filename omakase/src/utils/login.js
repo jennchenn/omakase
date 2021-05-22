@@ -1,6 +1,6 @@
 import * as queryString from 'query-string';
 
-export function createLoginUrl() {
+export function createRegisterUrl() {
     const { REACT_APP_GOOGLE_CLIENT_ID, REACT_APP_REDIRECT_URI } = process.env;
     const stringifiedParams = queryString.stringify({
         client_id: REACT_APP_GOOGLE_CLIENT_ID,

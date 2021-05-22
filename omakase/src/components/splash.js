@@ -3,7 +3,7 @@ import * as React from 'react';
 import '../styles/global.css';
 import '../styles/fade.css';
 
-import { createLoginUrl } from '../utils/login';
+import { createRegisterUrl, createLoginUrl } from '../utils/login';
 
 const pageStyles = {
   margin: '0px auto',
@@ -11,12 +11,13 @@ const pageStyles = {
 };
 
 const Splash = () => {
+  const googleRegisterUrl = createRegisterUrl();
   const googleLoginUrl = createLoginUrl();
   return (
     <div>
       <title>omakase</title>
       <div style={pageStyles}>
-        <a href={googleLoginUrl}>Login with Google</a>
+        <a href={googleRegisterUrl}>Register with Google</a>
       </div>
     </div>
   );
