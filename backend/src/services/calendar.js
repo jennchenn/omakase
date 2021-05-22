@@ -38,6 +38,18 @@ class Calendar {
             }
         });
     }
+
+    async getCalendars() {
+        try {
+            const res = await this.calendar.calendarList.list();
+            const calendars = res.data.items;
+            console.log(`Number calendars found: ${calendars.length}`);
+            return calendars;
+        } catch (err) {
+            console.log(`API returned error: ${err}`);
+            return;
+        }
+    }
 };
 
 module.exports = Calendar;

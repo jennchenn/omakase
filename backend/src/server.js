@@ -36,5 +36,6 @@ app.get('/health', health.health);
 // app.get('/image/user', authentication, image.retrieveAllByUser);
 app.post('/user/login', user.login);
 app.get('/calendar', calendar.listEvents);
+app.get('/calendar/list', calendar.getCalendars);
 
 module.exports = app;
