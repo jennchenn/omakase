@@ -1,4 +1,6 @@
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 export async function getAccessTokenFromCode(code) {
     const { data } = await axios({
@@ -14,5 +16,7 @@ export async function getAccessTokenFromCode(code) {
     });
     const url = "http://localhost:8080/user/register";
     await axios.post(url, { id_token: data.id_token, refresh_token: data.refresh_token });
+    cookies.set('token', data.id_token, { path: '/' });
+
     return;
 };

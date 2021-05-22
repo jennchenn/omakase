@@ -15,16 +15,16 @@ exports.register = async (req, res) => {
         const existingUser = await userController.find(user.email);
         user.refresh_token = refresh_token;
 
+        let savedUser;
         if (existingUser) {
             console.log('User already exists, updating refresh token.');
-            const update = await userController.update(user);
+            savedUser = await userController.update(user);
         } else {
             console.log('Registering user.');
-            await userController.register(user);
+            savedUser = await userController.register(user);
         }
-        calendarService.setCredentials(refresh_token);
         console.log('User successfully registered!');
-        res.status(200).send({ user: user.name, email: user.email });
+        res.status(200).send({ user: user.name, email: user.email, token });
     } catch (err) {
         res.status(500).send({ message: err.toString() });
     }
