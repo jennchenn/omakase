@@ -43,7 +43,24 @@ class Calendar {
 
     async getCalendars(refreshToken) {
         try {
-            console.log(refreshToken);
+            const oAuth2Client = new OAuth2(
+                process.env.GOOGLE_CLIENT_ID,
+                process.env.GOOGLE_CLIENT_SECRET
+            );
+            oAuth2Client.setCredentials({
+                refresh_token: refreshToken,
+            });
+            const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+            const calendars = await calendar.calendarList.list();
+            return calendars;
+        } catch (err) {
+            console.log(`API returned error: ${err}`);
+            return;
+        }
+    }
+
+    async getTimesBusy(calendars, refreshToken) {
+        try {
             const oAuth2Client = new OAuth2(
                 process.env.GOOGLE_CLIENT_ID,
                 process.env.GOOGLE_CLIENT_SECRET
@@ -53,10 +70,23 @@ class Calendar {
             });
             const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
-            const res = await calendar.calendarList.list();
-            const calendars = res.data.items;
-            console.log(`Number calendars found: ${calendars.length}`);
-            return calendars;
+            const numWeeks = 2;
+            const currentDate = new Date();
+            const twoWeeksFromNow = new Date();
+            twoWeeksFromNow.setDate(currentDate.getDate() + numWeeks * 7);
+            const res = await calendar.freebusy.query({
+                resource: {
+                    items: calendars,
+                    timeMin: currentDate.toISOString(),
+                    timeMax: twoWeeksFromNow.toISOString()
+                }
+            });
+            const events = res.data.calendars;
+            const availability = Object.keys(events).reduce(function (res, cal) {
+                return res.concat(events[cal].busy);
+            }, []);
+
+            return availability;
         } catch (err) {
             console.log(`API returned error: ${err}`);
             return;
