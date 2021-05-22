@@ -21,3 +21,12 @@ exports.getCalendars = async (req, res) => {
         res.status(500).send({ message: err.toString() });
     }
 };
+
+exports.setNextMeeting = async (req, res) => {
+    try {
+        const meetingTime = await calendarController.setNextMeeting(req.refreshToken, req.query.meetingLengthMinutes);
+        res.status(200).send(meetingTime);
+    } catch (err) {
+        res.status(500).send({ message: err.toString() });
+    }
+};

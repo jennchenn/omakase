@@ -39,6 +39,7 @@ app.get('/health', health.health);
 app.post('/user/register', user.register);
 app.get('/calendar', authentication, calendar.listEvents);
 app.get('/calendar/list', calendar.getCalendars);
+app.get('/calendar/meeting', authentication, calendar.setNextMeeting);
 // app.get('/calendar/list', authentication, calendar.getCalendars);
 
 module.exports = app;

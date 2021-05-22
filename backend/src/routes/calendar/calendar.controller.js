@@ -9,107 +9,17 @@ class CalendarController {
         return this.calendarService.getCalendars(refreshToken);
     }
 
-    sortAvailability(availability) {
-        return availability.sort((a, b) => {
-            let dateA = new Date(a.start);
-            let dateB = new Date(b.start);
-            return dateA - dateB;
-        });
+    async setNextMeeting(refreshToken, meetingLengthMinutes) {
+        const calendars = await this.calendarService.getCalendars(refreshToken);
+        console.log(calendars);
+
+        const availability = await this.calendarService.getTimesBusy(refreshToken, calendars);
+        return this.findFirstAvailableSlot(availability, meetingLengthMinutes);
     }
 
-    findFirstAvailableSlot(meetingLengthMinutes) {
-        const availability = [
-            {
-                "start": "2021-05-24T13:30:00Z",
-                "end": "2021-05-25T21:20:00Z"
-            },
-            {
-                "start": "2021-05-24T17:00:00Z",
-                "end": "2021-05-24T17:50:00Z"
-            },
-
-            {
-                "start": "2021-05-25T16:30:00Z",
-                "end": "2021-05-25T18:20:00Z"
-            },
-            {
-                "start": "2021-05-25T18:30:00Z",
-                "end": "2021-05-25T19:20:00Z"
-            },
-            {
-                "start": "2021-05-25T20:00:00Z",
-                "end": "2021-05-25T21:00:00Z"
-            },
-            {
-                "start": "2021-05-26T00:00:00Z",
-                "end": "2021-05-26T01:00:00Z"
-            },
-            {
-                "start": "2021-05-26T12:30:00Z",
-                "end": "2021-05-26T13:50:00Z"
-            },
-            {
-                "start": "2021-05-26T14:00:00Z",
-                "end": "2021-05-26T15:20:00Z"
-            },
-            {
-                "start": "2021-05-26T17:00:00Z",
-                "end": "2021-05-26T17:50:00Z"
-            },
-            {
-                "start": "2021-05-26T18:00:00Z",
-                "end": "2021-05-26T18:50:00Z"
-            },
-            {
-                "start": "2021-05-27T13:30:00Z",
-                "end": "2021-05-27T14:20:00Z"
-            },
-            {
-                "start": "2021-05-27T16:30:00Z",
-                "end": "2021-05-27T19:30:00Z"
-            },
-            {
-                "start": "2021-05-28T00:00:00Z",
-                "end": "2021-05-28T01:00:00Z"
-            },
-            {
-                "start": "2021-05-31T12:30:00Z",
-                "end": "2021-05-31T13:50:00Z"
-            },
-            {
-                "start": "2021-05-31T14:00:00Z",
-                "end": "2021-05-31T15:20:00Z"
-            },
-            {
-                "start": "2021-05-31T17:00:00Z",
-                "end": "2021-05-31T17:50:00Z"
-            },
-            {
-                "start": "2021-05-31T18:00:00Z",
-                "end": "2021-05-31T18:50:00Z"
-            },
-            {
-                "start": "2021-05-31T19:00:00Z",
-                "end": "2021-05-31T19:50:00Z"
-            },
-            {
-                "start": "2021-06-01T13:30:00Z",
-                "end": "2021-06-01T15:20:00Z"
-            },
-            {
-                "start": "2021-06-01T16:30:00Z",
-                "end": "2021-06-01T18:20:00Z"
-            },
-            {
-                "start": "2021-06-01T18:30:00Z",
-                "end": "2021-06-01T19:20:00Z"
-            },
-            {
-                "start": "2021-06-01T20:00:00Z",
-                "end": "2021-06-01T22:00:00Z"
-            }];
-
-        const mergedTimes = this.mergeOverlappingSlots(availability);
+    findFirstAvailableSlot(availability, meetingLengthMinutes) {
+        const sortedAvailability = this.sortAvailability(availability);
+        const mergedTimes = this.mergeOverlappingSlots(sortedAvailability);
         const minTime = new Date();
         minTime.setUTCHours(8, 30, 0);
         const endTime = new Date();
@@ -126,6 +36,14 @@ class CalendarController {
         }
         // TODO: handle no availabilities within two weeks
         return;
+    }
+
+    sortAvailability(availability) {
+        return availability.sort((a, b) => {
+            let dateA = new Date(a.start);
+            let dateB = new Date(b.start);
+            return dateA - dateB;
+        });
     }
 
     mergeOverlappingSlots(availability) {

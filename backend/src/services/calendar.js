@@ -52,14 +52,14 @@ class Calendar {
             });
             const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
             const calendars = await calendar.calendarList.list();
-            return calendars;
+            return calendars.data.items;
         } catch (err) {
             console.log(`API returned error: ${err}`);
             return;
         }
     }
 
-    async getTimesBusy(calendars, refreshToken) {
+    async getTimesBusy(refreshToken, calendars) {
         try {
             const oAuth2Client = new OAuth2(
                 process.env.GOOGLE_CLIENT_ID,
