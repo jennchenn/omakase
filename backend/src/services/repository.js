@@ -9,7 +9,7 @@ class Repository {
     updateUser(user) {
         return User.updateOne(
             { email: user.email },
-            { refresh_token: user.refresh_token }
+            { refreshToken: user.refreshToken }
         );
     }
 

@@ -1,19 +1,28 @@
-const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const RepositoryService = require('../services/repository');
+const repositoryService = new RepositoryService();
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
     try {
-        if (!req.headers.authorization) {
+        if (!req.cookies.token) {
             res.status(401).json({ message: 'No token provided' });
         }
-        const token = req.headers.authorization.split(' ')[1];
-        req.user = jwt.verify(token, process.env.JWT_SECRET);
+        const token = req.cookies.token;
+        const profile = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        const { name, email } = profile.getPayload();
+        console.log(`Verified user ${email}`);
+        req.name = name;
+        req.email = email;
+        const user = await repositoryService.findUser(email);
+        req.refreshToken = user.refreshToken;
         next();
     } catch (error) {
         console.log(error);
-        if (error === jwt.TokenExpiredError) {
-            res.status(401).json({ message: 'Token has expired' });
-        } else {
-            res.status(401).json({ message: 'Unable to authenticate user.' });
-        }
+        res.status(401).json({ message: 'Unable to authenticate user.' });
+
     }
 };

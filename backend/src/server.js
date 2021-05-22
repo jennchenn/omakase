@@ -1,3 +1,4 @@
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -8,7 +9,7 @@ const health = require('./routes/health/health.routes');
 const user = require('./routes/user/user.routes');
 const calendar = require('./routes/calendar/calendar.routes');
 
-// const authentication = require('./middleware/authentication');
+const authentication = require('./middleware/authentication');
 
 const app = express();
 
@@ -28,6 +29,7 @@ mongoose.connection.on('connected', () => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 
 // Routes
 app.get('/health', health.health);
@@ -35,8 +37,7 @@ app.get('/health', health.health);
 // app.get('/image', authentication, image.searchByName);
 // app.get('/image/user', authentication, image.retrieveAllByUser);
 app.post('/user/register', user.register);
-app.post('/user/login', user.login);
-app.get('/calendar', calendar.listEvents);
-app.get('/calendar/list', calendar.getCalendars);
+app.get('/calendar', authentication, calendar.listEvents);
+app.get('/calendar/list', authentication, calendar.getCalendars);
 
 module.exports = app;

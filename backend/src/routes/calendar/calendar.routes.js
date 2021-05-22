@@ -15,7 +15,9 @@ exports.listEvents = async (req, res) => {
 
 exports.getCalendars = async (req, res) => {
     try {
-        const calendars = await calendarController.getCalendars();
+        console.log(req.email);
+        console.log(req.refreshToken);
+        const calendars = await calendarController.getCalendars(req.refreshToken);
         console.log(calendars);
         res.status(200).send(calendars);
     } catch (err) {

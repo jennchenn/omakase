@@ -5,8 +5,8 @@ class CalendarController {
         this.calendarService = new Calendar();
     }
 
-    async getCalendars() {
-        return this.calendarService.getCalendars();
+    async getCalendars(refreshToken) {
+        return this.calendarService.getCalendars(refreshToken);
     }
 }
 

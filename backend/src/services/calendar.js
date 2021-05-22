@@ -1,14 +1,12 @@
 const { google } = require('googleapis');
 const { OAuth2 } = google.auth;
-const oAuth2Client = new OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET
-);
+
 
 class Calendar {
-    constructor() {
-        this.calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
-    }
+    // constructor() {
+
+    // }
+
     setCredentials(refresh_token) {
         oAuth2Client.setCredentials({
             refresh_token: refresh_token,
@@ -16,8 +14,12 @@ class Calendar {
         return true;
     }
 
-    listEvents() {
-        this.calendar.events.list({
+    listEvents(refresh_token) {
+        oAuth2Client.setCredentials({
+            refresh_token: refresh_token,
+        });
+        const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+        calendar.events.list({
             calendarId: 'primary',
             timeMin: (new Date()).toISOString(),
             maxResults: 10,
@@ -39,9 +41,19 @@ class Calendar {
         });
     }
 
-    async getCalendars() {
+    async getCalendars(refreshToken) {
         try {
-            const res = await this.calendar.calendarList.list();
+            console.log(refreshToken);
+            const oAuth2Client = new OAuth2(
+                process.env.GOOGLE_CLIENT_ID,
+                process.env.GOOGLE_CLIENT_SECRET
+            );
+            oAuth2Client.setCredentials({
+                refresh_token: refreshToken,
+            });
+            const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+
+            const res = await calendar.calendarList.list();
             const calendars = res.data.items;
             console.log(`Number calendars found: ${calendars.length}`);
             return calendars;
