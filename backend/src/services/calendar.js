@@ -3,10 +3,6 @@ const { OAuth2 } = google.auth;
 
 
 class Calendar {
-    // constructor() {
-
-    // }
-
     setCredentials(refresh_token) {
         oAuth2Client.setCredentials({
             refresh_token: refresh_token,
@@ -78,7 +74,8 @@ class Calendar {
                 resource: {
                     items: calendars,
                     timeMin: currentDate.toISOString(),
-                    timeMax: twoWeeksFromNow.toISOString()
+                    timeMax: twoWeeksFromNow.toISOString(),
+                    timezone: 'UTC'
                 }
             });
             const events = res.data.calendars;
@@ -87,6 +84,40 @@ class Calendar {
             }, []);
 
             return availability;
+        } catch (err) {
+            console.log(`API returned error: ${err}`);
+            return;
+        }
+    }
+
+    async createEvent(refreshToken, startDateTime, endDateTime) {
+        try {
+            const oAuth2Client = new OAuth2(
+                process.env.GOOGLE_CLIENT_ID,
+                process.env.GOOGLE_CLIENT_SECRET
+            );
+            oAuth2Client.setCredentials({
+                refresh_token: refreshToken,
+            });
+            const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+            const res = await calendar.events.insert({
+                calendarId: 'primary',
+                resource: {
+                    summary: 'New Event!',
+                    description: 'Event descr',
+                    start: {
+                        dateTime: startDateTime,
+                        timezone: 'UTC'
+
+                    },
+                    end: {
+                        dateTime: endDateTime,
+                        timezone: 'UTC'
+                    }
+
+                }
+            });
+            return res;
         } catch (err) {
             console.log(`API returned error: ${err}`);
             return;
