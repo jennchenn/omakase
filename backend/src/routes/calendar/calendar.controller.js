@@ -1,3 +1,4 @@
+const moment = require('moment');
 const Calendar = require('../../services/calendar');
 
 class CalendarController {
@@ -11,24 +12,42 @@ class CalendarController {
 
     async setNextMeeting(refreshToken, meetingLengthMinutes) {
         const calendars = await this.calendarService.getCalendars(refreshToken);
-        console.log(calendars);
-
         const availability = await this.calendarService.getTimesBusy(refreshToken, calendars);
-        return this.findFirstAvailableSlot(availability, meetingLengthMinutes);
+        const meetingTime = this.findFirstAvailableSlot(availability, meetingLengthMinutes);
+        return this.calendarService.createEvent(refreshToken, meetingTime.start, meetingTime.end);
     }
 
     findFirstAvailableSlot(availability, meetingLengthMinutes) {
         const sortedAvailability = this.sortAvailability(availability);
         const mergedTimes = this.mergeOverlappingSlots(sortedAvailability);
+        console.log(mergedTimes);
+
         const minTime = new Date();
-        minTime.setUTCHours(8, 30, 0);
+        minTime.setUTCHours(12, 30, 0);
         const endTime = new Date();
-        endTime.setUTCHours(22, 0, 0);
+        endTime.setUTCHours(3, 0, 0);
+
+        let proposedMeetingStart = this.addMinutesToDate(moment(), 30);
+        proposedMeetingStart = this.rountToNearestHalfHour(proposedMeetingStart);
+
+        while (proposedMeetingStart < new Date(mergedTimes[0][0])) {
+            if (this.isTimeInBetween(proposedMeetingStart, minTime, endTime)) {
+                let proposedMeetingEnd = this.addMinutesToDate(proposedMeetingStart, meetingLengthMinutes);
+
+                if (proposedMeetingEnd <= new Date(mergedTimes[0][0]) && this.isTimeInBetween(proposedMeetingEnd, minTime, endTime)) {
+                    return { start: proposedMeetingStart, end: proposedMeetingEnd };
+                } else {
+                    break;
+                }
+            } else {
+                proposedMeetingStart.setUTCHours(12, 30, 0);
+            }
+        }
+
         for (let i = 0; i < mergedTimes.length - 1; i += 1) {
             let proposedMeetingStart = new Date(mergedTimes[i][1]);
             if (this.isTimeInBetween(proposedMeetingStart, minTime, endTime)) {
-                let proposedMeetingEnd = new Date(mergedTimes[i][1]);
-                proposedMeetingEnd.setMinutes(proposedMeetingEnd.getMinutes() + meetingLengthMinutes);
+                let proposedMeetingEnd = this.addMinutesToDate(proposedMeetingStart, meetingLengthMinutes);
                 if (proposedMeetingEnd <= new Date(mergedTimes[i + 1][0]) && this.isTimeInBetween(proposedMeetingEnd, minTime, endTime)) {
                     return { start: proposedMeetingStart, end: proposedMeetingEnd };
                 }
@@ -64,11 +83,28 @@ class CalendarController {
     }
 
     isTimeInBetween(desiredDateString, startTime, endTime) {
-        let desiredDate = new Date(desiredDateString);
-        return desiredDate.getHours >= startTime.getHours()
-            || desiredDate.getMinutes >= startTime.getMinutes()
-            || desiredDate.getHours() <= endTime.getHours()
-            || desiredDate.getMinutes() <= endTime.getMinutes();
+        const time = moment.utc(desiredDateString);
+        const start = moment.utc(desiredDateString);
+        const end = moment.utc(desiredDateString);
+        start.hour('8');
+        start.minute('30');
+        end.hour('22');
+        end.minute('30');
+        if (start.isAfter(end)) {
+            end.add(1, 'days');
+        }
+        return time.isAfter(start) && time.isBefore(end);
+    }
+
+    addMinutesToDate(date, minutes) {
+        const newDate = moment.utc(date);
+        newDate.add(minutes, 'minutes');
+        return newDate;
+    }
+
+    rountToNearestHalfHour(date) {
+        const remainder = 30 - (date.minute() % 30);
+        return moment.utc(date).add(remainder, 'minutes');
     }
 
 }
