@@ -86,12 +86,12 @@ class CalendarController {
         const time = moment.utc(desiredDateString);
         const start = moment.utc(desiredDateString);
         const end = moment.utc(desiredDateString);
-        start.hour('8');
-        start.minute('30');
-        end.hour('22');
-        end.minute('30');
+        start.hour(12);
+        start.minute(30);
+        end.hour(6);
+        end.minute(30);
         if (start.isAfter(end)) {
-            end.add(1, 'days');
+            start.subtract(1, 'days');
         }
         return time.isAfter(start) && time.isBefore(end);
     }
@@ -106,7 +106,6 @@ class CalendarController {
         const remainder = 30 - (date.minute() % 30);
         return moment.utc(date).add(remainder, 'minutes');
     }
-
 }
 
 module.exports = CalendarController;
