@@ -11,6 +11,10 @@ class Calendar {
     }
 
     listEvents(refresh_token) {
+        const oAuth2Client = new OAuth2(
+            process.env.GOOGLE_CLIENT_ID,
+            process.env.GOOGLE_CLIENT_SECRET
+        );
         oAuth2Client.setCredentials({
             refresh_token: refresh_token,
         });

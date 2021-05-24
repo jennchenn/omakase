@@ -8,6 +8,7 @@ const cors = require('cors');
 const health = require('./routes/health/health.routes');
 const user = require('./routes/user/user.routes');
 const calendar = require('./routes/calendar/calendar.routes');
+const group = require('./routes/group/group.routes');
 
 const authentication = require('./middleware/authentication');
 
@@ -17,6 +18,7 @@ const app = express();
 mongoose.set('useCreateIndex', true);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useUnifiedTopology', true);
+mongoose.set('useFindAndModify', false);
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on('error', (err) => {
   console.log(`Error connecting to MongoDB: ${err}`);
@@ -38,9 +40,12 @@ app.get('/health', health.health);
 // app.get('/image/user', authentication, image.retrieveAllByUser);
 app.post('/user/register', user.register);
 app.post('/user/login', user.login);
-app.get('/calendar', authentication, calendar.listEvents);
-app.get('/calendar/list', calendar.getCalendars);
+app.get('/calendar/events', authentication, calendar.listEvents);
+app.get('/calendar/list', authentication, calendar.getCalendars);
 app.get('/calendar/meeting', authentication, calendar.setNextMeeting);
 // app.get('/calendar/list', authentication, calendar.getCalendars);
-
+app.get('/user/groups', authentication, group.getUserGroups);
+app.get('/group/:id', authentication, group.findGroup);
+app.post('/group', authentication, group.createGroup);
+app.post('/group/newMember', authentication, group.addMember);
 module.exports = app;

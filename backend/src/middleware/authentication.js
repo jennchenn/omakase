@@ -18,6 +18,7 @@ module.exports = async (req, res, next) => {
         req.name = name;
         req.email = email;
         const user = await repositoryService.findUser(email);
+        req.user = user;
         req.refreshToken = user.refreshToken;
         next();
     } catch (error) {
