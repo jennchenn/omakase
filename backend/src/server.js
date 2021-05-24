@@ -37,6 +37,7 @@ app.get('/health', health.health);
 // app.get('/image', authentication, image.searchByName);
 // app.get('/image/user', authentication, image.retrieveAllByUser);
 app.post('/user/register', user.register);
+app.post('/user/login', user.login);
 app.get('/calendar', authentication, calendar.listEvents);
 app.get('/calendar/list', calendar.getCalendars);
 app.get('/calendar/meeting', authentication, calendar.setNextMeeting);

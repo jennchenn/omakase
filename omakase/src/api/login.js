@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+
 const cookies = new Cookies();
 
 export async function getAccessTokenFromCode(code) {
@@ -17,6 +18,12 @@ export async function getAccessTokenFromCode(code) {
     const url = "http://localhost:8080/user/register";
     await axios.post(url, { id_token: data.id_token, refresh_token: data.refresh_token });
     cookies.set('token', data.id_token, { path: '/' });
-
     return;
+};
+
+export async function onSignIn(googleUser) {
+    const url = "http://localhost:8080/user/login";
+    const id_token = googleUser.getAuthResponse().id_token;
+    cookies.set('token', id_token, { path: '/' });
+    return axios.post(url, { id_token: id_token });
 };
