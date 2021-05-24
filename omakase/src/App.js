@@ -14,7 +14,6 @@ export default function App() {
         <Route exact path="/" render={() => <Splash />} />
         <Route path="/authenticate" render={() => <Authenticate />} />
         <Route path="/dashboard" render={() => <Dashboard />} />
-        {/* <Route path="/:<code>" render={() => <Splash />} /> */}
       </Router>
       <Footer />
     </div>

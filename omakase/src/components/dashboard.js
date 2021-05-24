@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Row } from 'react-bootstrap';
 
 import '../styles/global.css';
 
@@ -7,13 +8,21 @@ const pageStyles = {
     maxWidth: '723px',
 };
 
+const bodyStyle = {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '30px'
+};
+
 const Splash = () => {
     return (
-        <div>
+        <div style={pageStyles}>
             <title>omakase</title>
-            <div style={pageStyles}>
-                DASHBOARD
-            </div>
+            <Row>
+                <h1 style={bodyStyle}>
+                    dashboard
+                </h1>
+            </Row>
         </div>
     );
 };

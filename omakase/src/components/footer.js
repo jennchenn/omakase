@@ -2,6 +2,7 @@ import React from "react";
 
 const footer = {
   marginBottom: "40px",
+  marginTop: "40px",
   paddingLeft: "40px",
   paddingRight: "40px",
   textAlign: "center",
@@ -10,7 +11,7 @@ const footer = {
 function Footer() {
   return (
     <div style={footer}>
-      <div>Made with 🍚 and 💛 © Jennifer Chen 2021</div>
+      <div>Made with ⌛ © Jennifer Chen 2021</div>
     </div>
   );
 }
