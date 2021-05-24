@@ -21,94 +21,55 @@ class CalendarController {
         try {
             const sortedAvailability = this.sortAvailability(availability);
             const mergedTimes = this.mergeOverlappingSlots(sortedAvailability);
-            console.log(mergedTimes);
+            let proposedMeetingStart = this.findNearestHalfHourTime();
 
-            let proposedMeetingStart = this.addMinutesToDate(moment(), 30);
-            proposedMeetingStart = this.rountToNearestHalfHour(proposedMeetingStart);
-            proposedMeetingStart = moment(proposedMeetingStart);
             let counter = 0;
+            // Shift proposedMeetingStart if it overlaps with an existing event
             if (mergedTimes.length > 0 && proposedMeetingStart.isBetween(mergedTimes[0][0], mergedTimes[0][1])) {
                 proposedMeetingStart = mergedTimes[0][1];
                 counter += 1;
             }
 
+            // Only schedule events within two week time frame from current date
             while (moment(proposedMeetingStart) < moment().add(14, 'days')) {
                 let maxTime = mergedTimes.length > counter ? new Date(mergedTimes[counter][0]) : moment().add(14, 'days');
-                console.log('START', proposedMeetingStart, maxTime);
-                let res = this.findAvailability(moment(proposedMeetingStart), maxTime, meetingLengthMinutes);
-                if (res !== null) return res;
+                let meetingTime = this.findAvailability(moment(proposedMeetingStart), maxTime, meetingLengthMinutes);
+                if (meetingTime !== null) return meetingTime;
                 proposedMeetingStart = mergedTimes[counter][1];
                 counter += 1;
             }
-
-            // for (let i = 0; i < mergedTimes.length; i += 1) {
-            //     let proposedMeetingStart = new Date(mergedTimes[i][1]);
-            //     let maxTime = i + 1 < mergedTimes.length ? new Date(mergedTimes[i][0]) : moment().add(14, 'days');
-            //     console.log(proposedMeetingStart, maxTime);
-            //     let res = this.findAvailability(proposedMeetingStart, maxTime, meetingLengthMinutes);
-            //     console.log(res);
-
-            //     if (res !== null) return res;
-            //     // console.log(proposedMeetingStart);
-            //     // if (this.isTimeInBetween(proposedMeetingStart, minTime, endTime)) {
-            //     //     let proposedMeetingEnd = this.addMinutesToDate(proposedMeetingStart, meetingLengthMinutes);
-            //     //     if (proposedMeetingEnd <= new Date(mergedTimes[i + 1][0]) && this.isTimeInBetween(proposedMeetingEnd, minTime, endTime)) {
-            //     //         return { start: proposedMeetingStart, end: proposedMeetingEnd };
-            //     //     }
-            //     // } else {
-            //     //     let temp = moment.utc(proposedMeetingStart);
-            //     //     proposedMeetingStart = moment.utc(proposedMeetingStart);
-            //     //     temp.hours(12);
-            //     //     temp.minutes(30);
-            //     //     let duration = moment.duration(temp.diff(proposedMeetingStart));
-            //     //     let hours = duration.asHours();
-            //     //     proposedMeetingStart.add(hours, 'hours');
-            //     //     if (hours < 0) {
-            //     //         proposedMeetingStart.add(24, 'hours');
-            //     //     }
-            //     // }
-            // }
             // TODO: handle no availabilities within two weeks
             return null;
         } catch (err) {
-            console.log(err);
             throw new Error(err);
         }
     }
 
     findAvailability(proposedMeetingStart, maxTime, meetingLengthMinutes) {
+        // TODO: set these bounds from db
         const minTime = new Date();
         minTime.setUTCHours(12, 30, 0);
         const endTime = new Date();
         endTime.setUTCHours(3, 0, 0);
-        console.log(proposedMeetingStart, maxTime);
-        while (proposedMeetingStart < maxTime) {
-            console.log(proposedMeetingStart);
-            if (this.isTimeInBetween(proposedMeetingStart, minTime, endTime)) {
-                let proposedMeetingEnd = this.addMinutesToDate(proposedMeetingStart, meetingLengthMinutes);
-                if (proposedMeetingEnd <= maxTime && this.isTimeInBetween(proposedMeetingEnd, minTime, endTime)) {
-                    console.log({ start: proposedMeetingStart, end: proposedMeetingEnd });
-                    return { start: proposedMeetingStart, end: proposedMeetingEnd };
+
+        try {
+            while (proposedMeetingStart < maxTime) {
+                if (this.isTimeBetweenBounds(proposedMeetingStart, minTime, endTime)) {
+                    let proposedMeetingEnd = this.addMinutesToDate(proposedMeetingStart, meetingLengthMinutes);
+                    if (proposedMeetingEnd <= maxTime && this.isTimeBetweenBounds(proposedMeetingEnd, minTime, endTime)) {
+                        return { start: proposedMeetingStart, end: proposedMeetingEnd };
+                    } else {
+                        break;
+                    }
                 } else {
-                    break;
+                    // Shift to nearest time that falls between user's business hours
+                    proposedMeetingStart = this.shiftTimeToBound(proposedMeetingStart);
                 }
-            } else {
-                let temp = moment.utc(proposedMeetingStart);
-                proposedMeetingStart = moment.utc(proposedMeetingStart);
-                console.log('OG', proposedMeetingStart);
-                temp.hours(12);
-                temp.minutes(30);
-                let duration = moment.duration(temp.diff(proposedMeetingStart)).asHours();
-                proposedMeetingStart.add(duration, 'hours');
-                console.log('SHIFTED', proposedMeetingStart, duration);
-                if (proposedMeetingStart < temp) {
-                    proposedMeetingStart.add(24, 'hours');
-                    console.log('SHIFT 24', proposedMeetingStart);
-                }
-                console.log(proposedMeetingStart);
             }
+            return null;
+        } catch (err) {
+            console.log(err);
         }
-        return null;
     }
 
     sortAvailability(availability) {
@@ -142,7 +103,15 @@ class CalendarController {
         return mergedTimes;
     }
 
-    isTimeInBetween(desiredDateString, startTime, endTime) {
+    findNearestHalfHourTime() {
+        // Give at least 30 minute notice for new events
+        let earliestStartTime = this.addMinutesToDate(moment(), 30);
+        let proposedMeetingStart = this.roundToNearestHalfHour(earliestStartTime);
+        return moment(proposedMeetingStart);
+    }
+
+    isTimeBetweenBounds(desiredDateString, startTime, endTime) {
+        // TODO: read start and end bounds from db
         const time = moment.utc(desiredDateString);
         const start = moment.utc(desiredDateString);
         const end = moment.utc(desiredDateString);
@@ -153,10 +122,20 @@ class CalendarController {
         if (start.isAfter(end)) {
             end.add(1, 'days');
         }
-        console.log('IS BETWEEN', start, end, time);
-        console.log(time.isSameOrAfter(start));
-        console.log(time.isSameOrBefore(end));
         return time.isSameOrAfter(start) && time.isSameOrBefore(end);
+    }
+
+    shiftTimeToBound(proposedStart) {
+        let proposedMeetingStart = moment.utc(proposedStart);
+        let startOfMeetingTimes = moment.utc(proposedMeetingStart);
+        startOfMeetingTimes.hours(12);
+        startOfMeetingTimes.minutes(30);
+        let duration = moment.duration(startOfMeetingTimes.diff(proposedMeetingStart)).asHours();
+        proposedMeetingStart.add(duration, 'hours');
+        if (proposedMeetingStart < startOfMeetingTimes) {
+            proposedMeetingStart.add(24, 'hours');
+        }
+        return proposedMeetingStart;
     }
 
     addMinutesToDate(date, minutes) {
@@ -165,7 +144,7 @@ class CalendarController {
         return newDate;
     }
 
-    rountToNearestHalfHour(date) {
+    roundToNearestHalfHour(date) {
         const remainder = 30 - (date.minute() % 30);
         return moment.utc(date).add(remainder, 'minutes');
     }
