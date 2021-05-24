@@ -10,7 +10,7 @@ class Repository {
     updateUser(user) {
         return User.findOneAndUpdate(
             { email: user.email },
-            ...{ $set: user }
+            { refreshToken: user.refreshToken }
         );
     }
 
@@ -18,6 +18,10 @@ class Repository {
         return User.findOne({
             email
         }).populate('groups');
+    }
+
+    findUserById(id) {
+        return User.findById(id);
     }
 
     findGroup(id) {

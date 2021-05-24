@@ -43,6 +43,7 @@ app.post('/user/login', user.login);
 app.get('/calendar/events', authentication, calendar.listEvents);
 app.get('/calendar/list', authentication, calendar.getCalendars);
 app.get('/calendar/meeting', authentication, calendar.setNextMeeting);
+app.post('/calendar/groupMeeting', authentication, calendar.setNextMeetingGroup);
 // app.get('/calendar/list', authentication, calendar.getCalendars);
 app.get('/user/groups', authentication, group.getUserGroups);
 app.get('/group/:id', authentication, group.findGroup);

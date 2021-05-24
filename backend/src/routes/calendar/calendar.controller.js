@@ -1,9 +1,11 @@
 const moment = require('moment');
 const Calendar = require('../../services/calendar');
+const Repository = require('../../services/repository');
 
 class CalendarController {
     constructor() {
         this.calendarService = new Calendar();
+        this.repositoryService = new Repository();
     }
 
     async getCalendars(refreshToken) {
@@ -15,6 +17,18 @@ class CalendarController {
         const availability = await this.calendarService.getTimesBusy(refreshToken, calendars);
         const meetingTime = this.findFirstAvailableSlot(availability, meetingLengthMinutes);
         return this.calendarService.createEvent(refreshToken, meetingTime.start, meetingTime.end);
+    }
+
+    async setNextMeetingGroup(currentUserRefreshToken, groupId, meetingLengthMinutes) {
+        let availability = [];
+        const group = await this.repositoryService.findGroup(groupId);
+        for (let member of group.members) {
+            let calendars = await this.calendarService.getCalendars(member.refreshToken);
+            let memberAvailability = await this.calendarService.getTimesBusy(member.refreshToken, calendars);
+            availability = availability.concat(memberAvailability);
+        }
+        const meetingTime = this.findFirstAvailableSlot(availability, meetingLengthMinutes);
+        return this.calendarService.createEvent(currentUserRefreshToken, meetingTime.start, meetingTime.end);
     }
 
     findFirstAvailableSlot(availability, meetingLengthMinutes) {

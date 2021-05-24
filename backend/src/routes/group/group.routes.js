@@ -14,7 +14,7 @@ exports.getUserGroups = async (req, res) => {
 exports.findGroup = async (req, res) => {
     try {
         const id = req.params.id;
-        const group = groupController.find(id);
+        const group = await groupController.find(id);
         res.status(200).send(group);
     } catch (err) {
         res.status(500).send({ message: err.toString() });

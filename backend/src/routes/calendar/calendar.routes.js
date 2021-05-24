@@ -30,3 +30,13 @@ exports.setNextMeeting = async (req, res) => {
         res.status(500).send({ message: err.toString() });
     }
 };
+
+
+exports.setNextMeetingGroup = async (req, res) => {
+    try {
+        const meetingTime = await calendarController.setNextMeetingGroup(req.refreshToken, req.body.id, req.body.lengthMinutes);
+        res.status(200).send(meetingTime);
+    } catch (err) {
+        res.status(500).send({ message: err.toString() });
+    }
+};
