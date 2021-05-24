@@ -24,7 +24,7 @@ exports.getCalendars = async (req, res) => {
 
 exports.setNextMeeting = async (req, res) => {
     try {
-        const meetingTime = await calendarController.setNextMeeting(req.refreshToken, req.query.meetingLengthMinutes);
+        const meetingTime = await calendarController.setNextMeeting(req.refreshToken, req.body.meeting);
         res.status(200).send(meetingTime);
     } catch (err) {
         res.status(500).send({ message: err.toString() });
@@ -34,7 +34,7 @@ exports.setNextMeeting = async (req, res) => {
 
 exports.setNextMeetingGroup = async (req, res) => {
     try {
-        const meetingTime = await calendarController.setNextMeetingGroup(req.refreshToken, req.body.id, req.body.lengthMinutes);
+        const meetingTime = await calendarController.setNextMeetingGroup(req.refreshToken, req.body.id, req.body.meeting);
         res.status(200).send(meetingTime);
     } catch (err) {
         res.status(500).send({ message: err.toString() });

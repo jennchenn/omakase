@@ -12,14 +12,14 @@ class CalendarController {
         return this.calendarService.getCalendars(refreshToken);
     }
 
-    async setNextMeeting(refreshToken, meetingLengthMinutes) {
+    async setNextMeeting(refreshToken, meetingDetails) {
         const calendars = await this.calendarService.getCalendars(refreshToken);
         const availability = await this.calendarService.getTimesBusy(refreshToken, calendars);
-        const meetingTime = this.findFirstAvailableSlot(availability, meetingLengthMinutes);
-        return this.calendarService.createEvent(refreshToken, meetingTime.start, meetingTime.end);
+        const meetingTime = this.findFirstAvailableSlot(availability, meetingDetails.lengthMinutes);
+        return this.calendarService.createEvent(refreshToken, meetingTime.start, meetingTime.end, meetingDetails);
     }
 
-    async setNextMeetingGroup(currentUserRefreshToken, groupId, meetingLengthMinutes) {
+    async setNextMeetingGroup(currentUserRefreshToken, groupId, meetingDetails) {
         let availability = [];
         const group = await this.repositoryService.findGroup(groupId);
         for (let member of group.members) {
@@ -27,8 +27,10 @@ class CalendarController {
             let memberAvailability = await this.calendarService.getTimesBusy(member.refreshToken, calendars);
             availability = availability.concat(memberAvailability);
         }
-        const meetingTime = this.findFirstAvailableSlot(availability, meetingLengthMinutes);
-        return this.calendarService.createEvent(currentUserRefreshToken, meetingTime.start, meetingTime.end);
+        const emails = group.members.map(function (member) { return { email: member.email }; });
+        meetingDetails.attendees = emails;
+        const meetingTime = this.findFirstAvailableSlot(availability, meetingDetails.lengthMinutes);
+        return this.calendarService.createEvent(currentUserRefreshToken, meetingTime.start, meetingTime.end, meetingDetails);
     }
 
     findFirstAvailableSlot(availability, meetingLengthMinutes) {

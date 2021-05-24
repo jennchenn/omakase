@@ -94,7 +94,7 @@ class Calendar {
         }
     }
 
-    async createEvent(refreshToken, startDateTime, endDateTime) {
+    async createEvent(refreshToken, startDateTime, endDateTime, meetingDetails) {
         try {
             const oAuth2Client = new OAuth2(
                 process.env.GOOGLE_CLIENT_ID,
@@ -108,8 +108,8 @@ class Calendar {
                 calendarId: 'primary',
                 conferenceDataVersion: 1,
                 requestBody: {
-                    summary: 'New Event MEET!',
-                    description: 'Event descr',
+                    summary: meetingDetails.title,
+                    description: meetingDetails.description,
                     start: {
                         dateTime: startDateTime,
                         timezone: 'UTC'
@@ -125,7 +125,8 @@ class Calendar {
                             },
                             requestId: uuidv4()
                         },
-                    }
+                    },
+                    attendees: meetingDetails.attendees
                 }
             });
             return res;
