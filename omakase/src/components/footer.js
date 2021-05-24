@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 const footer = {
-  marginBottom: "40px",
-  marginTop: "40px",
-  paddingLeft: "40px",
-  paddingRight: "40px",
-  textAlign: "center",
+  marginBottom: '40px',
+  marginTop: '40px',
+  paddingLeft: '40px',
+  paddingRight: '40px',
+  textAlign: 'center',
 };
 
 function Footer() {

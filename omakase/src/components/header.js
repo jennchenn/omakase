@@ -12,8 +12,8 @@ const header = {
 };
 
 const image = {
-  width: '80px',
-  height: '80px',
+  width: '60px',
+  height: '60px',
   display: 'block',
   margin: 'auto',
 };
