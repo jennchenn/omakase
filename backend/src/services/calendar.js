@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
 const { OAuth2 } = google.auth;
-
+const { v4: uuidv4 } = require('uuid');
 
 class Calendar {
     setCredentials(refresh_token) {
@@ -106,19 +106,26 @@ class Calendar {
             const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
             const res = await calendar.events.insert({
                 calendarId: 'primary',
-                resource: {
-                    summary: 'New Event!',
+                conferenceDataVersion: 1,
+                requestBody: {
+                    summary: 'New Event MEET!',
                     description: 'Event descr',
                     start: {
                         dateTime: startDateTime,
                         timezone: 'UTC'
-
                     },
                     end: {
                         dateTime: endDateTime,
                         timezone: 'UTC'
+                    },
+                    conferenceData: {
+                        createRequest: {
+                            conferenceSolutionKey: {
+                                type: "hangoutsMeet"
+                            },
+                            requestId: uuidv4()
+                        },
                     }
-
                 }
             });
             return res;
