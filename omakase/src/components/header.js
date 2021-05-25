@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
-import Logo from '../assets/logo.png';
 import '../styles/global.css';
 
 const header = {
@@ -15,21 +14,19 @@ const image = {
   width: '60px',
   height: '60px',
   display: 'block',
-  margin: 'auto',
+  marginRight: 'auto',
+  marginLeft: 'auto'
 };
 
-const col = {
-  paddingLeft: '0px',
-};
 
 function Header() {
   return (
     <Container style={header}>
       <Row>
-        <Col style={col}>
+        <Col>
           <div>
             <a href='/'>
-              <img className='logo' src={Logo} style={image} alt='Home' />
+              <h1 style={image}>🍣</h1>
             </a>
           </div>
         </Col>

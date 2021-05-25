@@ -113,6 +113,9 @@ function Group() {
             </Row>
             <CardGroup>{renderMembers()}</CardGroup>
             <Row><p style={centeredText}>•</p></Row>
+            <Row>
+                <h2 style={subtitleStyle}>create new event</h2>
+            </Row>
             <Form style={buttonStyle} onSubmit={createEvent}>
                 <Form.Group controlId="eventName">
                     <Form.Label>event name</Form.Label>
