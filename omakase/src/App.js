@@ -5,6 +5,7 @@ import Footer from "./components/footer";
 import Splash from "./pages/splash";
 import Authenticate from "./pages/authenticate";
 import Dashboard from "./pages/dashboard";
+import Group from "./pages/group";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route exact path="/" render={() => <Splash />} />
         <Route path="/authenticate" render={() => <Authenticate />} />
         <Route path="/dashboard" render={() => <Dashboard />} />
+        <Route path="/group/:id" render={() => <Group />} />
       </Router>
       <Footer />
     </div>

@@ -1,6 +1,8 @@
-import * as React from 'react';
-import { Row } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Row, Button, Dropdown } from 'react-bootstrap';
 
+import { listCalendars } from '../api/calendar';
+import { getGroups } from '../api/group';
 import '../styles/global.css';
 
 const pageStyles = {
@@ -14,7 +16,25 @@ const bodyStyle = {
     marginTop: '30px'
 };
 
-const Splash = () => {
+
+
+function Dashboard() {
+    const [groups, setGroups] = useState([]);
+
+    useEffect(() => {
+        getUserGroups();
+    }, []);
+
+    const getUserGroups = async () => {
+        const groups = await getGroups();
+        setGroups(groups);
+    };
+
+    const mapGroups = () => {
+        const map = groups.map((group) => { return <Dropdown.Item href={"/group/" + group._id}>{group.name}</Dropdown.Item>; });
+        return map;
+    };
+
     return (
         <div style={pageStyles}>
             <title>omakase</title>
@@ -23,8 +43,18 @@ const Splash = () => {
                     dashboard
                 </h1>
             </Row>
+            <Dropdown>
+                <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                    Groups
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                    {mapGroups()}
+                </Dropdown.Menu>
+            </Dropdown>
+            <Button style={bodyStyle} onClick={listCalendars}>List Calendars</Button>
+            <Button style={bodyStyle} onClick={getGroups}>Get Groups</Button>
         </div>
     );
 };
 
-export default Splash;
+export default Dashboard;

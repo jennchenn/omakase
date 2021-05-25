@@ -16,7 +16,7 @@ const title = {
   marginTop: '30px'
 };
 
-const Splash = () => {
+function Splash() {
   const googleRegisterUrl = createRegisterUrl();
   return (
     <div>
