@@ -1,4 +1,3 @@
-
 const Repository = require('../../services/repository');
 
 class GroupController {

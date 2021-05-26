@@ -1,6 +1,3 @@
-const Calendar = require('../../services/calendar');
-const calendarService = new Calendar();
-
 const UserController = require('./user.controller');
 const userController = new UserController();
 
