@@ -16,9 +16,9 @@ class UserController {
             idToken: id_token,
             audience: process.env.GOOGLE_CLIENT_ID
         });
-        const { name, email } = profile.getPayload();
+        const { name, email, picture } = profile.getPayload();
         console.log(`Verified user ${email}`);
-        return { name, email };
+        return { name, email, picture };
     }
 
     async find(email) {
@@ -28,6 +28,8 @@ class UserController {
 
     async register(user) {
         console.log(`Creating user with email ${user.email}`);
+        // Save image with higher quality
+        user.picture = user.picture.replace('s96-c', 's384-c');
         return this.repositoryService.createUser(user);
     }
 

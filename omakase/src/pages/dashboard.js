@@ -17,13 +17,14 @@ const bodyStyle = {
 };
 
 
-
 function Dashboard() {
     const [groups, setGroups] = useState([]);
 
     useEffect(() => {
-        getUserGroups();
-    }, []);
+        if (groups.length === 0) {
+            getUserGroups();
+        }
+    });
 
     const getUserGroups = async () => {
         const groups = await getGroups();

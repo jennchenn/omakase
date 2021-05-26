@@ -13,7 +13,7 @@ const cardStyle = {
 function Member({ member }) {
   return (
     <Card bg="light" border="primary" variant="top" style={cardStyle}>
-      {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+      <Card.Img variant="top" src={member.picture} />
       <Card.Body>
         <Card.Header>{member.name}</Card.Header>
         <Card.Text>

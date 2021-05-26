@@ -13,7 +13,7 @@ module.exports = async (req, res, next) => {
             idToken: token,
             audience: process.env.GOOGLE_CLIENT_ID
         });
-        const { name, email } = profile.getPayload();
+        const { name, email, picture } = profile.getPayload();
         console.log(`Verified user ${email}`);
         req.name = name;
         req.email = email;
