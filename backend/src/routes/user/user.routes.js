@@ -31,7 +31,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         console.log('Received request to login user');
-        res.status(200).send({ user: req.name, email: req.email });
+        res.status(200).send({ user: req.user.name, email: req.user.email });
     } catch (err) {
         res.status(500).send({ message: err.toString() });
     }

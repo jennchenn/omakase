@@ -13,13 +13,10 @@ module.exports = async (req, res, next) => {
             idToken: token,
             audience: process.env.GOOGLE_CLIENT_ID
         });
-        const { name, email, picture } = profile.getPayload();
+        const { email } = profile.getPayload();
         console.log(`Verified user ${email}`);
-        req.name = name;
-        req.email = email;
         const user = await repositoryService.findUser(email);
         req.user = user;
-        req.refreshToken = user.refreshToken;
         next();
     } catch (error) {
         console.log(error);

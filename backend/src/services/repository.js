@@ -33,9 +33,7 @@ class Repository {
             name,
             members: [user._id]
         };
-        console.log(group);
         const createdGroup = await Group.create(group);
-        console.log(createdGroup);
         await this.addGroupToUser(user.email, createdGroup._id);
         return createdGroup;
     }
@@ -51,7 +49,6 @@ class Repository {
     }
 
     async addGroupToUser(email, groupId) {
-        console.log(groupId);
         return User.findOneAndUpdate(
             { email: email },
             { $addToSet: { groups: groupId } }
