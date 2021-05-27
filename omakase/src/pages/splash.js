@@ -13,7 +13,14 @@ const pageStyles = {
 const title = {
   marginLeft: 'auto',
   marginRight: 'auto',
-  marginTop: '30px'
+  marginTop: '30px',
+};
+
+const body = {
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  marginTop: '15px',
+  textAlign: 'centre',
 };
 
 function Splash() {
@@ -26,11 +33,33 @@ function Splash() {
           <h1 style={title}>omakase</h1>
         </Row>
         <Row>
-          <a style={title} href={googleRegisterUrl}>get started</a>
+          <h3 style={title}>how it works</h3>
+        </Row>
+        <Row>
+          <p style={body}>
+            select the group that you would like to meet with, enter in some
+            meeting details, and an event invite with call details will be
+            automatically sent to all members for the earliest slot available.
+          </p>
+        </Row>
+        <Row>
+          <h3 style={title}>coming soon</h3>
+        </Row>
+        <Row>
+          <p style={body}>
+            <li>support for adding new members</li>
+            <li>ability to see past event history</li>
+            <li>integration with different calendars</li>
+          </p>
+        </Row>
+        <Row>
+          <a style={title} href={googleRegisterUrl}>
+            get started
+          </a>
         </Row>
       </div>
     </div>
   );
-};
+}
 
 export default Splash;
