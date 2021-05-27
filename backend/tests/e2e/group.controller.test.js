@@ -6,7 +6,7 @@ const app = require('../../src/server');
 
 let groupController;
 const testUser = {
-    email: 'jennistesting@gmail.com',
+    email: 'peachyburgundy@gmail.com',
     name: 'Jenn Test',
     refreshToken: process.env.TEST_REFRESH_TOKEN
 };
@@ -25,6 +25,8 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
+    await User.deleteMany({});
+    await Group.deleteMany({});
     await mongoose.disconnect();
 });
 
@@ -55,9 +57,9 @@ describe('Test group controller functions', () => {
 
     it('Add member to group', async () => {
         const testUser = {
-            email: 'jennistestingagain@gmail.com',
+            email: 'jenn.chenn93@gmail.com',
             name: 'Jenn Test',
-            refreshToken: process.env.TEST_REFRESH_TOKEN
+            refreshToken: process.env.TEST_REFRESH_TOKEN_2
         };
         const newMember = await User.create(testUser);
         const createdGroup = await groupController.create('My other group', user);

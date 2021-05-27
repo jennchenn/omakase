@@ -51,8 +51,12 @@ class CalendarController {
                 let maxTime = mergedTimes.length > counter ? new Date(mergedTimes[counter][0]) : moment().add(14, 'days');
                 let meetingTime = this.findAvailability(moment(proposedMeetingStart), maxTime, meetingLengthMinutes);
                 if (meetingTime !== null) return meetingTime;
-                proposedMeetingStart = mergedTimes[counter][1];
-                counter += 1;
+                else if (counter <= mergedTimes.length - 1) {
+                    proposedMeetingStart = mergedTimes[counter][1];
+                    counter += 1;
+                } else {
+                    throw new Error('No meeting dates available');
+                }
             }
             // TODO: handle no availabilities within two weeks
             return null;
@@ -114,7 +118,6 @@ class CalendarController {
                 previousEvent = [availability[i].start, availability[i].end];
             }
         }
-
         mergedTimes.push(previousEvent);
         return mergedTimes;
     }

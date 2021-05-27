@@ -10,7 +10,8 @@ class Repository {
     updateUser(user) {
         return User.findOneAndUpdate(
             { email: user.email },
-            { refreshToken: user.refreshToken }
+            { refreshToken: user.refreshToken },
+            { new: true }
         );
     }
 

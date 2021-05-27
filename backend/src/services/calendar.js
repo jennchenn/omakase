@@ -55,7 +55,6 @@ class Calendar {
             const availability = Object.keys(events).reduce(function (res, cal) {
                 return res.concat(events[cal].busy);
             }, []);
-
             return availability;
         } catch (err) {
             console.log(`API returned error: ${err}`);

@@ -12,15 +12,15 @@ let user1;
 let user2;
 
 const testUser1 = {
-    email: 'jennistesting@gmail.com',
+    email: 'jenn.chenn93@gmail.com',
     name: 'Jenn Test',
     refreshToken: process.env.TEST_REFRESH_TOKEN
 };
 
 const testUser2 = {
-    email: 'jennistestingagain@gmail.com',
+    email: 'peachyburgundy@gmail.com',
     name: 'Jenn Test',
-    refreshToken: process.env.TEST_REFRESH_TOKEN
+    refreshToken: process.env.TEST_REFRESH_TOKEN_2
 };
 
 beforeAll(() => {
@@ -41,6 +41,8 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
+    await User.deleteMany({});
+    await Group.deleteMany({});
     await mongoose.disconnect();
 });
 
@@ -65,11 +67,13 @@ describe('Test calendar controller functions', () => {
         expect(res.data.summary).toBe(meetingDetails.title);
         expect(res.data.attendees).toStrictEqual([
             {
-                email: user1.email,
-                responseStatus: 'needsAction'
+                email: user2.email,
+                organizer: true,
+                responseStatus: 'needsAction',
+                self: true
             },
             {
-                email: user2.email,
+                email: user1.email,
                 responseStatus: 'needsAction'
             }
         ]);
