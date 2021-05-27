@@ -30,10 +30,12 @@ mongoose.connection.on('connected', () => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 // Routes
@@ -43,7 +45,11 @@ app.post('/user/login', user.login);
 app.get('/user/groups', authentication, group.getUserGroups);
 app.get('/calendar/list', authentication, calendar.getCalendars);
 app.post('/calendar/meeting', authentication, calendar.setNextMeeting);
-app.post('/calendar/groupMeeting', authentication, calendar.setNextMeetingGroup);
+app.post(
+  '/calendar/groupMeeting',
+  authentication,
+  calendar.setNextMeetingGroup
+);
 app.get('/group/:id', authentication, group.findGroup);
 app.post('/group', authentication, group.createGroup);
 app.post('/group/newMember', authentication, group.addMember);
