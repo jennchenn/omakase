@@ -16,7 +16,7 @@ class GroupController {
     }
 
     async addMember(groupId, email) {
-        console.log(`Adding member to group ${groupId}`);
+        console.log(`Adding member with email ${email} to group ${groupId}`);
         const user = await this.repositoryService.findUser(email);
         return this.repositoryService.addMemberToGroup(groupId, user);
     }
