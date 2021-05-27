@@ -11,3 +11,9 @@ export async function getGroupInfo(id) {
   const res = await axios.get(url, { withCredentials: true });
   return res.data;
 }
+
+export async function createGroup(group) {
+  const url = 'http://localhost:8080/group';
+  const res = await axios.post(url, group, { withCredentials: true });
+  return res;
+}

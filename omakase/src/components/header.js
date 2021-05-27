@@ -7,7 +7,7 @@ const header = {
   width: '800px',
   marginTop: '100px',
   marginLeft: 'auto',
-  marginRight: 'auto'
+  marginRight: 'auto',
 };
 
 const image = {
@@ -15,9 +15,8 @@ const image = {
   height: '60px',
   display: 'block',
   marginRight: 'auto',
-  marginLeft: 'auto'
+  marginLeft: 'auto',
 };
-
 
 function Header() {
   return (
@@ -25,7 +24,7 @@ function Header() {
       <Row>
         <Col>
           <div>
-            <a href='/'>
+            <a href="/">
               <h1 style={image}>🍣</h1>
             </a>
           </div>

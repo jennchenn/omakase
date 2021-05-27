@@ -29,7 +29,7 @@ const centeredText = {
 };
 
 const buttonStyle = {
-  textAlign: 'centre',
+  textAlign: 'center',
   marginLeft: '13px',
   marginRight: '10px',
 };

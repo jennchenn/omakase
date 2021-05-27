@@ -7,7 +7,7 @@ const cardStyle = {
   marginLeft: '10px',
   marginRight: '10px',
   width: '18rem',
-  textAlign: 'center'
+  textAlign: 'center',
 };
 
 function Member({ member }) {
@@ -16,9 +16,7 @@ function Member({ member }) {
       <Card.Img variant="top" src={member.picture} />
       <Card.Body>
         <Card.Header>{member.name}</Card.Header>
-        <Card.Text>
-          {member.email}
-        </Card.Text>
+        <Card.Text>{member.email}</Card.Text>
       </Card.Body>
     </Card>
   );
