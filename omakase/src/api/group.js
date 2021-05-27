@@ -17,3 +17,9 @@ export async function createGroup(group) {
   const res = await axios.post(url, group, { withCredentials: true });
   return res;
 }
+
+export async function addMember(member) {
+  const url = 'http://localhost:8080/group/newMember';
+  const res = await axios.post(url, member, { withCredentials: true });
+  return res;
+}

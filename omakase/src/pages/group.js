@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, CardGroup, Button, Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { getGroupInfo } from '../api/group';
+import { getGroupInfo, addMember } from '../api/group';
 import { createGroupMeeting } from '../api/calendar';
 import Member from '../components/member';
 import '../styles/global.css';
@@ -14,13 +14,13 @@ const pageStyles = {
 const bodyStyle = {
   marginLeft: 'auto',
   marginRight: 'auto',
-  marginTop: '30px',
+  marginTop: '10px',
 };
 
 const subtitleStyle = {
   marginLeft: 'auto',
   marginRight: 'auto',
-  marginTop: '10px',
+  marginTop: '5px',
 };
 
 const centeredText = {
@@ -39,6 +39,7 @@ function Group() {
   const [eventName, setEventName] = useState();
   const [eventDescription, setEventDescription] = useState();
   const [meetingLength, setMeetingLength] = useState();
+  const [newMemberEmail, setNewMemberEmail] = useState();
   const { id } = useParams();
 
   useEffect(() => {
@@ -89,6 +90,23 @@ function Group() {
     }
   };
 
+  const handleChangeEmail = (event) => {
+    setNewMemberEmail(event.target.value);
+  };
+
+  const addNewMember = async (event) => {
+    event.preventDefault();
+    const member = {
+      id: id,
+      email: newMemberEmail,
+    };
+    const res = await addMember(member);
+    if (res.status === 200) {
+      alert(`Added member: ${member.email}`);
+      getGroup();
+    }
+  };
+
   if (typeof groupInfo === 'undefined')
     return (
       <div style={pageStyles}>
@@ -116,6 +134,24 @@ function Group() {
         <h2 style={subtitleStyle}>members</h2>
       </Row>
       <CardGroup>{renderMembers()}</CardGroup>
+      <Row>
+        <p style={centeredText}>•</p>
+      </Row>
+      <Row>
+        <h2 style={subtitleStyle}>add new member</h2>
+      </Row>
+      <Form style={buttonStyle} onSubmit={addNewMember}>
+        <Form.Group controlId="memberEmail">
+          <Form.Label>member email</Form.Label>
+          <Form.Control
+            placeholder="member@email.com"
+            onChange={handleChangeEmail}
+          />
+        </Form.Group>
+        <Button variant="dark" type="submit">
+          add
+        </Button>
+      </Form>
       <Row>
         <p style={centeredText}>•</p>
       </Row>
