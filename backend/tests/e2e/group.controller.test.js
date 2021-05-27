@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
 const GroupController = require('../../src/routes/group/group.controller');
 const User = require('../../src/models/User');
 const Group = require('../../src/models/Group');

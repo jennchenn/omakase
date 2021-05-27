@@ -16,6 +16,9 @@ module.exports = async (req, res, next) => {
         const { email } = profile.getPayload();
         console.log(`Verified user ${email}`);
         const user = await repositoryService.findUser(email);
+        if (!user) {
+            throw new Error('User does not exist!');
+        }
         req.user = user;
         next();
     } catch (error) {

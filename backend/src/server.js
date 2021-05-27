@@ -38,17 +38,12 @@ app.use(cookieParser());
 
 // Routes
 app.get('/health', health.health);
-// app.post('/image', [authentication, upload.array('images')], image.upload);
-// app.get('/image', authentication, image.searchByName);
-// app.get('/image/user', authentication, image.retrieveAllByUser);
 app.post('/user/register', user.register);
 app.post('/user/login', user.login);
-app.get('/calendar/events', authentication, calendar.listEvents);
+app.get('/user/groups', authentication, group.getUserGroups);
 app.get('/calendar/list', authentication, calendar.getCalendars);
 app.post('/calendar/meeting', authentication, calendar.setNextMeeting);
 app.post('/calendar/groupMeeting', authentication, calendar.setNextMeetingGroup);
-// app.get('/calendar/list', authentication, calendar.getCalendars);
-app.get('/user/groups', authentication, group.getUserGroups);
 app.get('/group/:id', authentication, group.findGroup);
 app.post('/group', authentication, group.createGroup);
 app.post('/group/newMember', authentication, group.addMember);

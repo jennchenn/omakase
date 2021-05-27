@@ -4,15 +4,6 @@ const calendarService = new Calendar();
 const CalendarController = require('./calendar.controller');
 const calendarController = new CalendarController();
 
-exports.listEvents = async (req, res) => {
-    try {
-        const events = calendarService.listEvents(req.user.refreshToken);
-        res.status(200).send(events);
-    } catch (err) {
-        res.status(500).send({ message: err.toString() });
-    }
-};
-
 exports.getCalendars = async (req, res) => {
     try {
         const calendars = await calendarController.getCalendars(req.user.refreshToken);

@@ -21,10 +21,8 @@ function Dashboard() {
     const [groups, setGroups] = useState([]);
 
     useEffect(() => {
-        if (groups.length === 0) {
-            getUserGroups();
-        }
-    });
+        getUserGroups();
+    }, []);
 
     const getUserGroups = async () => {
         const groups = await getGroups();
