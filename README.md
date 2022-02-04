@@ -1,6 +1,7 @@
 # omakase
 omakase is a calendar event scheduler. Users connect to the app using their google account, and grant access to omakase to query their calendar. The app then schedules a meeting for a desired length in the next available slot for the user.
 
+![omakase demo](./assets/omakase.gif)
 ### Features
 * Connect to Google account
 * Retrieve all events in their calendars
@@ -75,6 +76,17 @@ omakase is a calendar event scheduler. Users connect to the app using their goog
     email: string
 }
 ```
+
+### Running Locally
+#### Backend
+1. Make a copy of `backend/.env.template` and rename it to `backend/.env`
+2. Add the required secret values
+3. Start the server with `npm run start`
+#### Frontend
+1. Make a copy of `omakase/.env.template` and rename it to `omakase/.env`
+2. Add the required secret values
+3. Run the app with `yarn start`
+
 ### Proposed New Features
 * Integrate with different calendars
 * Allow users to reschedule events made through omakase
